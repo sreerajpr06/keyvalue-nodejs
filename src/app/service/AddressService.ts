@@ -17,6 +17,7 @@ export class AddressService{
     }
 
     updateAddress(addressData: ObjectLiteral) {
+        console.log(addressData)
         return this.addressRepo.updateAddress(addressData);
     }
 

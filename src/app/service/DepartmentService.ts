@@ -23,6 +23,11 @@ export class DepartmentService{
     }
 
     public async deleteDepartment(deptId: string) {
-        return this.departmentRepo.deleteDepartment(deptId);
+        try {
+            const delDepartment =  await this.departmentRepo.deleteDepartment(deptId);
+            return delDepartment;
+        } catch (err) {
+            throw new HttpException(400, "Failerd to delete department");
+        }
     }    
 }

@@ -31,7 +31,17 @@ export class EmployeeService{
     async updateEmployee(employeeData: ObjectLiteral) {
         employeeData.password = employeeData.password ?  await bcrypt.hash(employeeData.password, 10): ''
         // console.log(employeeData)
-        const updatedEmp = await this.employeeRepo.updateEmployee(employeeData);
+        const emp = plainToClass(Employee, {
+          id: employeeData.id,
+          name: employeeData.name,
+          password: employeeData.password ?  await bcrypt.hash(employeeData.password, 10): '',
+          // age: employeeData.age,
+          departmentId: employeeData.departmentId,
+          // isActive: true,
+          role: employeeData.role,
+          employeeaddressId: ""
+        })
+        const updatedEmp = await this.employeeRepo.updateEmployee(emp);
         // console.log(updatedEmp)
         return updatedEmp;
       }

@@ -25,6 +25,7 @@ export class EmployeeRespository{
         employeeData.employeeaddressId = oldEmp.employeeaddressId;
         await employeeRepo.update(employeeData.id, employeeData);
         const newEmp =  await employeeRepo.findOne(employeeData.id);
+        // console.log(newEmp)
         return newEmp;
     }
 

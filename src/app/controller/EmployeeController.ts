@@ -20,7 +20,7 @@ class EmployeeController extends AbstractController {
     this.initializeRoutes();
   }
   protected initializeRoutes() {
-    this.router.get(`${this.path}`, authorize([Users.ADMIN]), this.getAllEmployees);
+    this.router.get(`${this.path}`, this.getAllEmployees);
     this.router.get(`${this.path}/:id`, this.getEmployeeById);
     this.router.post(`${this.path}`, 
       validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),
@@ -39,11 +39,12 @@ class EmployeeController extends AbstractController {
       response.status(200);
       const empData = await this.employeeService.getAllEmployees();
       const addrData = await this.addressService.getAllAddresses();
-      // console.log(empData)
+      // // console.log(empData)
       const employees = empData.map(employee => {
-        // console.log(addrData.find(address => address.id === employee.employeeaddressId).city)
+        // // console.log(addrData.find(address => address.id === employee.employeeaddressId).city)
         let address = addrData.find(address => address.id === employee.employeeaddressId);
         return {
+          id: employee.id,
           name: employee.name,
           role: employee.role,
           departmentId: employee.departmentId,
@@ -55,7 +56,7 @@ class EmployeeController extends AbstractController {
       const data = {
         employees: employees
       }
-      console.log(employees)
+      // console.log(employees)
       response.send(this.fmt.formatResponse(data, Date.now() - request.startTime, 'OK'));
     } catch (error) {
       return next(error);
@@ -66,9 +67,9 @@ class EmployeeController extends AbstractController {
     try {
       response.status(200);
       const employee = await this.employeeService.getEmployeeById(request.params.id);
-      console.log(employee)
+      // console.log(employee)
       const address = await this.addressService.getAddressOfEmp(employee.employeeaddressId);
-      console.log(address)
+      // console.log(address)
       const data = {
         name: employee.name,
         role: employee.role,
@@ -79,7 +80,7 @@ class EmployeeController extends AbstractController {
       }
       response.send(this.fmt.formatResponse(data, Date.now() - request.startTime, 'OK'));
     } catch(error) {
-      console.log(error)
+      // console.log(error)
       return next(error);
     }
 
@@ -88,9 +89,9 @@ class EmployeeController extends AbstractController {
   private createEmployee = async (request: RequestWithUser, response: Response, next: NextFunction) => {
     try {
       response.status(200);
-      // console.log(request.body.address);
+      // // console.log(request.body.address);
       const addrData = await this.addressService.createAddress(request.body.address);
-      // console.log(addrData)
+      // // console.log(addrData)
       const empData = await this.employeeService.createEmployee(request.body, addrData.id);
       const data = {
         "employee": empData,
@@ -106,14 +107,15 @@ class EmployeeController extends AbstractController {
     try {
       response.status(200);
       const newEmpData = await this.employeeService.updateEmployee(request.body);
-      console.log(newEmpData);
+      // // console.log(newEmpData);
+      // // console.log(request.body)
       const address = plainToClass(EmployeeAddress, {
         id: newEmpData.employeeaddressId,
         city: request.body.city,
         state: request.body.state,
         pin: request.body.pin
       })
-      console.log(address)
+      // // console.log(address)
       const newAddrData = await this.addressService.updateAddress(address);
       const data = {
         "employee": newEmpData,
@@ -142,7 +144,7 @@ class EmployeeController extends AbstractController {
     next: NextFunction
   ) => {
     const loginData = request.body;
-    console.log(loginData);
+    // console.log(loginData);
     const loginDetail = await this.employeeService.employeeLogin(
       loginData.name.toLowerCase(),
       loginData.password

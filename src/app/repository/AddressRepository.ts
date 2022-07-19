@@ -30,6 +30,7 @@ export class AddressRepository{
 
     async updateAddress(addressData: ObjectLiteral) {
         const empAddrRepo = getConnection().getRepository(EmployeeAddress);
+        // console.log(addressData)
         return await empAddrRepo.update(addressData.id, addressData);
     }
 
